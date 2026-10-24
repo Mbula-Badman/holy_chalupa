@@ -1,4 +1,4 @@
-import os
+﻿import os
 import secrets
 from datetime import datetime, timezone
 from typing import Generator
@@ -44,7 +44,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Holy Chalupa API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"] + ([os.getenv("FRONTEND_URL", "").rstrip("/")] and [os.getenv("FRONTEND_URL", "").rstrip("/")] or []),
     allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
@@ -129,7 +129,7 @@ def create_inquiry(payload: InquiryCreate, db: Session = Depends(get_db)):
     db.add(row)
     db.commit()
     db.refresh(row)
-    return {"ok": True, "id": row.id, "message": "Thanks — your inquiry has been received."}
+    return {"ok": True, "id": row.id, "message": "Thanks â€” your inquiry has been received."}
 
 
 @app.get("/api/admin/inquiries")
@@ -157,3 +157,4 @@ def update_inquiry(
     row.status = payload.status
     db.commit()
     return {"ok": True, "inquiry": serialize_inquiry(row)}
+
